@@ -859,19 +859,11 @@ body {
     </div>
 
     <div class="hero-visual">
-      <div class="stats-float">
-        <div class="stats-num" id="counter-news">0</div>
-        <div class="stats-label">Notícias cadastradas</div>
-      </div>
       <div class="hero-orb">
         <div class="hero-orb-inner">🔬</div>
         <div class="orbit-item" style="--orbit-r:90px">⚛️</div>
         <div class="orbit-item" style="--orbit-r:110px">🧬</div>
         <div class="orbit-item" style="--orbit-r:100px">💻</div>
-      </div>
-      <div class="stats-float">
-        <div class="stats-num">4</div>
-        <div class="stats-label">Escolas integradas</div>
       </div>
     </div>
   </div>
@@ -1236,7 +1228,7 @@ function renderNoticias() {
   ).join('');
 
   // Counter
-  document.getElementById('counter-news').textContent = noticiasData.length;
+  
 }
 
 function abrirNoticia(idx) {
