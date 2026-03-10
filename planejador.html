@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planejador de Aulas — 4 Escolas</title>
+<title>Planejador de Aulas — CNT.edu</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <style>
@@ -723,7 +723,7 @@ body {
   <div class="login-card">
     <div class="login-logo">
       <h1>📚 Meu Planejador<span class="dot">.</span></h1>
-      <p class="sub">4 Escolas · 1 Sistema Integrado</p>
+      <p class="sub">Planejamento Semanal de Aulas</p>
     </div>
 
     <div class="tab-row">
@@ -1515,40 +1515,12 @@ function selecionarEscola(id) {
   // Carregar data salva para esta escola
   const dataKey = `dataLetivo_${usuarioLogado.usuario}_${id}`;
   const savedDate = localStorage.getItem(dataKey);
-  const horarioSalvo = ls(`horario_${usuarioLogado.usuario}_${id}`);
-  // Detectar formato antigo (checkbox boolean) e limpar
-  const formatoAntigo = horarioSalvo && !horarioSalvo._configurado &&
-    Object.values(horarioSalvo).some(dia =>
-      dia && typeof dia === 'object' && Object.values(dia).some(slot => slot === true || slot === false)
-    );
-  if (formatoAntigo) {
-    localStorage.removeItem(`horario_${usuarioLogado.usuario}_${id}`);
-    document.getElementById('listaSemanas').innerHTML = `<div class="help-tip" style="margin:0;background:rgba(242,184,23,0.12);border-color:rgba(242,184,23,0.4);">
-      ⚠️ O horário desta escola estava no <strong>formato antigo</strong> e foi removido.<br>
-      Por favor, reconfigure clicando em <strong>"🕐 Horário"</strong> acima para definir as disciplinas por slot.
-    </div>`;
-    document.getElementById('contadorSemanas').textContent = '';
-    return;
-  }
-  // Considera configurado se: campoUnico marcado OU ao menos um slot com disciplina
-  const horarioConfigurado = horarioSalvo && (
-    horarioSalvo._configurado === true ||
-    Object.values(horarioSalvo).some(dia =>
-      dia && typeof dia === 'object' && Object.values(dia).some(slot => slot && slot.disciplina)
-    )
-  );
-  
-  if (savedDate && horarioConfigurado) {
+
+  if (savedDate) {
     document.getElementById('inicioLetivo').value = savedDate;
     gerarSemanas(savedDate);
   } else {
-    let msg = '';
-    if (!horarioConfigurado) {
-      msg = '⚠️ Configure o <strong>horário</strong> desta escola (botão "🕐 Horário" acima) antes de gerar as semanas.';
-    } else {
-      msg = '📅 Configure a data de início do ano letivo acima.';
-    }
-    document.getElementById('listaSemanas').innerHTML = `<div class="help-tip" style="margin:0;">${msg}</div>`;
+    document.getElementById('listaSemanas').innerHTML = `<div class="help-tip" style="margin:0;">📅 Informe a data de início do ano letivo acima para gerar as semanas.</div>`;
     document.getElementById('contadorSemanas').textContent = '';
   }
 }
@@ -1571,17 +1543,6 @@ function registrarListenersPrincipal() {
     elInicio._listenerOk = true;
     elInicio.addEventListener('change', function() {
       if (!escolaAtual) { alert('Selecione uma escola primeiro'); return; }
-      const horarioSalvo = ls(`horario_${usuarioLogado.usuario}_${escolaAtual.id}`);
-      const horarioConfigurado = horarioSalvo && (
-        horarioSalvo._configurado === true ||
-        Object.values(horarioSalvo).some(dia =>
-          dia && typeof dia === 'object' && Object.values(dia).some(slot => slot && slot.disciplina)
-        )
-      );
-      if (!horarioConfigurado) {
-        alert('⚠️ Configure o horário desta escola primeiro!\n\nClique em "🕐 Horário" no menu superior para definir seus horários de aula.');
-        return;
-      }
       localStorage.setItem(`dataLetivo_${usuarioLogado.usuario}_${escolaAtual.id}`, this.value);
       gerarSemanas(this.value);
     });
